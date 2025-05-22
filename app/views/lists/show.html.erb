@@ -1,0 +1,53 @@
+<h1 class="mb-4"><%= @list.name %></h1>
+
+<h2>Movies</h2>
+<div class="row row-cols-1 row-cols-md-2 g-3">
+  <% @list.bookmarks.each do |bookmark| %>
+    <div class="col">
+      <div class="card mb-3">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <%= image_tag bookmark.movie.poster_url, class: "img-fluid rounded-start", alt: bookmark.movie.title %>
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h5 class="card-title"><%= bookmark.movie.title %> (⭐ <%= bookmark.movie.rating %>)</h5>
+              <p class="card-text"><%= bookmark.comment %></p>
+              <%= link_to "Remove", bookmark_path(bookmark), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-outline-danger btn-sm" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<hr>
+
+<h2>Add a Movie</h2>
+<%= simple_form_for [@list, @bookmark] do |f| %>
+  <div class="row">
+    <div class="col-md-6">
+      <%= f.input :movie_id, collection: Movie.all, label_method: :title, value_method: :id %>
+      <%= f.input :comment %>
+      <%= f.button :submit, "Add Movie", class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>
+
+<hr>
+<h2>Comments</h2>
+<%= simple_form_for [@list, Review.new] do |f| %>
+  <div class="mb-3">
+    <%= f.input :content, label: false, placeholder: "Write a comment..." %>
+    <%= f.button :submit, "Post Comment", class: "btn btn-outline-secondary" %>
+  </div>
+<% end %>
+
+<ul class="list-group mt-3">
+  <% @list.reviews.each do |review| %>
+    <li class="list-group-item">
+      <%= review.content %>
+    </li>
+  <% end %>
+</ul>
